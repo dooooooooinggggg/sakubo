@@ -1,2 +1,3 @@
 #!/bin/bash
-docker run -it sakubo /bin/bash
+docker-compose up -d
+docker exec -it sakubo_app_1 /bin/bash

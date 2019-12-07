@@ -11,6 +11,9 @@ int global_2;     // bss
 
 int main()
 {
+    print_ptr_value(global_1);
+    print_ptr_value(global_2);
+
     int local = 101; // stack
     print_ptr_value(local);
     func_1();
@@ -45,6 +48,6 @@ int func_3()
 
 int print_ptr_value(int v)
 {
-    printf("%d at %p\n", v, &v);
+    // printf("%d at %p\n", v, &v);
     return 0;
 }

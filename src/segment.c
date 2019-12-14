@@ -6,8 +6,8 @@ int func_2();
 int func_3();
 int print_ptr_value(int v);
 
-int global_1 = 7; // data
-int global_2;     // bss
+int global_1 = 106; // data
+int global_2;       // bss
 
 int main()
 {

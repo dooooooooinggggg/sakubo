@@ -11,8 +11,11 @@ int global_2;       // bss
 
 int main()
 {
+    static int global_3; // bss
+
     print_ptr_value(&global_1);
     print_ptr_value(&global_2);
+    print_ptr_value(&global_3);
 
     int local = 101; // stack
     print_ptr_value(&local);

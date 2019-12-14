@@ -24,6 +24,10 @@ int main()
     int local_3 = 108;
     int local_4 = 109;
 
+    print_ptr_value(&local_2);
+    print_ptr_value(&local_3);
+    print_ptr_value(&local_4);
+
     func_1();
     func_2();
     return 0;

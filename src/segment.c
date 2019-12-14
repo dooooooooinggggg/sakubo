@@ -16,6 +16,11 @@ int main()
 
     int local = 101; // stack
     print_ptr_value(&local);
+
+    int local_2 = 107;
+    int local_3 = 108;
+    int local_4 = 109;
+
     func_1();
     func_2();
     return 0;

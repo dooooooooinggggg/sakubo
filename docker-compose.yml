@@ -5,7 +5,7 @@ services:
     build: .
     tty: true
     volumes:
-      - .:/work
+      - .:/root
     cap_add:
       - SYS_PTRACE
     security_opt:

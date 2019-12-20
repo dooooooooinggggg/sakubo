@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS  := -g -Wall $(INCLUDE)
 
-PROGNAME = segment file_access
+PROGNAME = chapter2/segment chapter2/file_access
 
 all: $(PROGNAME)
 

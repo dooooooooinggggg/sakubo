@@ -14,6 +14,6 @@ all: $(PROGNAME)
 	$(CC) $< -o $@
 
 clean:
-	rm -rf *.o
+	rm -rf */*.o
 	rm -rf $(PROGNAME)
-	rm -rf *.dSYM
+	rm -rf */*.dSYM

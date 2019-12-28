@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
- 
-int main() {
+
+int main()
+{
 	char str_a[20];
 	char *pointer;
 	char *pointer2;
@@ -15,4 +16,3 @@ int main() {
 	strcpy(pointer2, "y you guys!\n");
 	printf(pointer); // Hey you guys!
 }
-

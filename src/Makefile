@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS  := -g -Wall $(INCLUDE)
+CFLAGS  := -fno-stack-protector -g -Wall $(INCLUDE)
 
 PROGNAME = chapter1/addressofc2 chapter1/convert2 chapter1/input chapter1/pointer \
 	chapter1/pointer2_types chapter1/pointer_types chapter1/scope chapter1/scope3 chapter1/typecasting \

@@ -22,7 +22,14 @@ notesearch
 notetaker
 overflow_example
 byte_size
+fmt_uncommon
+fmt_uncommon2
+fmt_vuln
+fmt_vuln2
+dtors_sample
 
 notes
 
 *.dSYM
+
+Hacking

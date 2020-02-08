@@ -30,6 +30,9 @@ dtors_sample
 
 notes
 
+simple-server
+tinyweb
+
 *.dSYM
 
 Hacking

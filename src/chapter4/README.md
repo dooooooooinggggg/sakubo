@@ -32,3 +32,10 @@ telnet 127.0.0.1 7890
 # Hello World!
 # 好きな文字列を入力してみる
 ```
+
+## webserver-id
+
+```sh
+make
+./webserver-id ishikawa.tech
+```

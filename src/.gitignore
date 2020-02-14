@@ -33,6 +33,8 @@ notes
 simple-server
 tinyweb
 webserver-id
+raw_tcpsniff
+pcap_sniff
 
 *.dSYM
 

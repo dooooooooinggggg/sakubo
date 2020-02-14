@@ -35,6 +35,7 @@ tinyweb
 webserver-id
 raw_tcpsniff
 pcap_sniff
+decode_sniff
 
 *.dSYM
 

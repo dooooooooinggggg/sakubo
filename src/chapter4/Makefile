@@ -1,6 +1,6 @@
 CC = gcc
 # -no-pieオプションはClangでは，ない？
-CFLAGS  := -fno-stack-protector -g -Wall -no-pie $(INCLUDE)
+CFLAGS  := -fno-stack-protector -lpcap -g -Wall -no-pie $(INCLUDE)
 
 PROGNAME = simple-server tinyweb webserver-id raw_tcpsniff pcap_sniff
 

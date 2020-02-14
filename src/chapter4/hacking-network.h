@@ -1,6 +1,50 @@
-/* This function accepts a socket FD and a ptr to the null terminated
- * string to send.  The function will make sure all the bytes of the
- * string are sent.  Returns 1 on success and 0 on failure.
+#define ETHER_ADDR_LEN 6
+#define ETHER_HDR_LEN 14
+
+struct ether_hdr
+{
+   unsigned char ether_dest_addr[ETHER_ADDR_LEN]; // 宛先のMACアドレス
+   unsigned char ether_src_addr[ETHER_ADDR_LEN];  // 送信元のMACアドレス
+   unsigned short ether_type;                     // イーサネットパケットのタイプ
+};
+
+struct ip_hdr
+{
+   unsigned char ip_version_and_header_length; // バージョンとヘッダ長
+   unsigned char ip_tos;                       // サービスのタイプ
+   unsigned short ip_len;                      // トータルの長さ
+   unsigned short ip_id;                       // 識別数値
+   unsigned short ip_frag_offset;              // フラグメントのオフセットとフラグ
+   unsigned char ip_ttl;                       // 寿命
+   unsigned char ip_type;                      // プロトコルタイプ
+   unsigned short ip_checksum;                 // チェックサム
+   unsigned int ip_src_addr;                   // 送信元のIPアドレス
+   unsigned int ip_dest_addr;                  // 宛先のIPアドレス
+};
+
+struct tcp_hdr
+{
+   unsigned short tcp_src_port;  // 送信元のTCPポート
+   unsigned short tcp_dest_port; // 宛先のTCPポート
+   unsigned int tcp_seq;         // TCPのシーケンス番号
+   unsigned int tcp_ack;         // TCPの確認応答番号
+   unsigned char reserved : 4;   // 6ビットの予約済み領域からの4ビット
+   unsigned char tcp_offset : 4; // ホストがリトルエンディアンの場合のTCPデータのオフセット
+   unsigned char tcp_flags;      // TCPフラグ（および予約済み領域からの2ビット）
+#define TCP_FIN 0x01
+#define TCP_SYN 0x02
+#define TCP_RST 0x04
+#define TCP_PUSH 0x08
+#define TCP_ACK 0x10
+#define TCP_URG 0x20
+   unsigned short tcp_window;   // TCPのウィンドウサイズ
+   unsigned short tcp_checksum; // TCPのチェックサム
+   unsigned short tcp_urgent;   // TCPの緊急ポインタ
+};
+
+/* この関数はソケットファイル記述子、および送信対象のnullで終端された
+ * 文字列へのポインタを受け取る。　この関数は文字列の全バイトの送信を
+ * 保証する。　成功時は1を返し、失敗時は0を返す。
  */
 int send_string(int sockfd, unsigned char *buffer)
 {
@@ -10,90 +54,43 @@ int send_string(int sockfd, unsigned char *buffer)
    {
       sent_bytes = send(sockfd, buffer, bytes_to_send, 0);
       if (sent_bytes == -1)
-         return 0; // return 0 on send error
+         return 0; // 失敗時には0を返す。
       bytes_to_send -= sent_bytes;
       buffer += sent_bytes;
    }
-   return 1; // return 1 on success
+   return 1; // 成功時には1を返す。
 }
 
-/* This function accepts a socket FD and a ptr to a destination
- * buffer.  It will receive from the socket until the EOL byte
- * sequence in seen.  The EOL bytes are read from the socket, but
- * the destination buffer is terminated before these bytes.
- * Returns the size of the read line (without EOL bytes).
+/* この関数はソケットファイル記述子と出力バッファへのポインタを
+ * 受け取る。　これはEOLバイト群に遭遇するまでソケットからデータを
+ * 受信する。　EOLバイトはソケットから読み込まれるものの、出力
+ * バッファはEOLバイト群の直前で終端される。
+ * 読み込んだ行のサイズ（EOLバイトを省く）を返す。
  */
 int recv_line(int sockfd, unsigned char *dest_buffer)
 {
-#define EOL "\r\n" // End-Of-Line byte sequence
+#define EOL "\r\n" // EOLバイト
 #define EOL_SIZE 2
    unsigned char *ptr;
    int eol_matched = 0;
 
    ptr = dest_buffer;
    while (recv(sockfd, ptr, 1, 0) == 1)
-   { // read a single byte
+   { // 1バイトを読み込む。
       if (*ptr == EOL[eol_matched])
-      { // does this byte match terminator
+      { // そのバイトは行末記号か？
          eol_matched++;
          if (eol_matched == EOL_SIZE)
-         {                                // if all bytes match terminator,
-            *(ptr + 1 - EOL_SIZE) = '\0'; // terminate the string
-            return strlen(dest_buffer);   // return bytes recevied
+         {                                // 行末記号すべてに適合した場合、
+            *(ptr + 1 - EOL_SIZE) = '\0'; // 文字列を終端させる。
+            return strlen(dest_buffer);   // 受信したバイト群を返す。
          }
       }
       else
       {
          eol_matched = 0;
       }
-      ptr++; // increment the pointer to the next byter;
+      ptr++; // 次のバイトのためにポインタをインクリメントする。
    }
-   return 0; // didn't find the end of line characters
+   return 0; // EOL文字が見つからなかった。
 }
-
-/* Structure for Ethernet headers */
-#define ETHER_ADDR_LEN 6
-#define ETHER_HDR_LEN 14
-
-struct ether_hdr
-{
-   unsigned char ether_dest_addr[ETHER_ADDR_LEN]; // Destination MAC address
-   unsigned char ether_src_addr[ETHER_ADDR_LEN];  // Source MAC address
-   unsigned short ether_type;                     // Type of Ethernet packet
-};
-
-/* Structure for Internet Protocol (IP) headers */
-struct ip_hdr
-{
-   unsigned char ip_version_and_header_length; // version and header length combined
-   unsigned char ip_tos;                       // type of service
-   unsigned short ip_len;                      // total length
-   unsigned short ip_id;                       // identification number
-   unsigned short ip_frag_offset;              // fragment offset and flags
-   unsigned char ip_ttl;                       // time to live
-   unsigned char ip_type;                      // protocol type
-   unsigned short ip_checksum;                 // checksum
-   unsigned int ip_src_addr;                   // source IP address
-   unsigned int ip_dest_addr;                  // destination IP address
-};
-
-/* Structure for Transmission Control Protocol (TCP) headers */
-struct tcp_hdr
-{
-   unsigned short tcp_src_port;  // source TCP port
-   unsigned short tcp_dest_port; // destination TCP port
-   unsigned int tcp_seq;         // TCP sequence number
-   unsigned int tcp_ack;         // TCP acknowledgement number
-   unsigned char reserved : 4;   // 4-bits from the 6-bits of reserved space
-   unsigned char tcp_offset : 4; // TCP data offset for little endian host
-   unsigned char tcp_flags;      // TCP flags (and 2-bits from reserved space)
-#define TCP_FIN 0x01
-#define TCP_SYN 0x02
-#define TCP_RST 0x04
-#define TCP_PUSH 0x08
-#define TCP_ACK 0x10
-#define TCP_URG 0x20
-   unsigned short tcp_window;   // TCP window size
-   unsigned short tcp_checksum; // TCP checksum
-   unsigned short tcp_urgent;   // TCP urgent pointer
-};

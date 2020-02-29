@@ -36,6 +36,7 @@ webserver-id
 raw_tcpsniff
 pcap_sniff
 decode_sniff
+synflood
 
 *.dSYM
 

